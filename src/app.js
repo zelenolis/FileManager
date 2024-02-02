@@ -1,5 +1,6 @@
 import readline from 'readline';
 import os from 'os';
+import { cpusinfo, osinfo, systemUser, homedirectory, architect } from './utils/opsys.js'
 
 const homeDir = os.homedir();
 const userArgs = process.argv;
@@ -33,10 +34,19 @@ if (username !== '') {
 rl.on('line', (input) => {
     switch (input.trim()) {
       case 'os --EOL':
-        console.log(`Operating system information: ${os.platform()} ${os.release()}`);
+        osinfo();
         break;
       case 'os --cpus':
-        console.log(`Processor information: ${JSON.stringify(os.cpus())}`);
+        cpusinfo();
+        break;
+      case 'os --username':
+        systemUser();
+        break;
+      case 'os --homedir':
+        homedirectory();
+        break;
+      case 'os --architecture':
+        architect();
         break;
       case '.exit':
         console.log('\x1b[31m%s\x1b[0m', 'Goodbye!');
