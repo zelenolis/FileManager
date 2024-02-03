@@ -1,8 +1,9 @@
 import readline from 'readline';
 import os from 'os';
 import { cpusinfo, osinfo, systemUser, homedirectory, architect } from './utils/opsys.js'
+import { navup, navdown, navlist } from './utils/navigation.js'
 
-const homeDir = os.homedir();
+let homeDir = os.homedir();
 const userArgs = process.argv;
 
 const rl = readline.createInterface({
@@ -48,12 +49,31 @@ rl.on('line', (input) => {
       case 'os --architecture':
         architect();
         break;
+      case 'up':
+        homeDir = navup(homeDir);
+        console.log(`new directory is: ${homeDir}`)
+        break;
+      case 'ls':
+        navlist(homeDir);
+        break;
       case '.exit':
         console.log('\x1b[31m%s\x1b[0m', 'Goodbye!');
         rl.close();
         break;
+
       default:
-        console.log(`Invalid input: ${input.trim()}`);
+        if (input.trim().startsWith('cd ')) {
+            const folderName = input.trim().substring(3);
+            navdown(homeDir, folderName)
+              .then((newPath) => {
+                homeDir = newPath;
+              })
+              .catch((err) => {
+                console.log(err);
+              })
+          } else {
+            console.log(`Invalid input: ${input.trim()}`);
+          }
         break;
     }
   
