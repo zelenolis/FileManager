@@ -1,4 +1,5 @@
 import readline from 'readline';
+import { dirname } from 'path';
 import os from 'os';
 import { cpusinfo, osinfo, systemUser, homedirectory, architect } from './utils/opsys.js';
 import { navup, navdown, navlist } from './utils/navigation.js';
@@ -13,8 +14,7 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
-rl.setPrompt('> ');
-rl.prompt();
+rl.setPrompt(`\x1b[32m${homeDir}> \x1b[0m`);
 
 let username = '';
 
@@ -28,45 +28,55 @@ if (username !== '') {
     console.log(`Welcome to the File Manager, ${username}!`);
     console.log(`\x1b[32mYou are currently in ${homeDir}\x1b[0m`);
 } else {
+  console.log('\x1b[31m%s\x1b[0m', `start the program in following way: npm run start -- --username=your_username`);
+  process.exit(0);
+  /*
     rl.question('\x1b[32mWhat is your name? \x1b[0m', (name) => {
         username = name;
         console.log(`Welcome to the File Manager, ${username}!`);
         console.log(`\x1b[32mYou are currently in ${homeDir}\x1b[0m`);
       });
+      */
 }
 
 rl.on('line', (input) => {
     switch (input.trim()) {
       case 'os --EOL':
         osinfo();
+        newPrompt();
         break;
       case 'os --cpus':
         cpusinfo();
+        newPrompt();
         break;
       case 'os --username':
         systemUser();
+        newPrompt();
         break;
       case 'os --homedir':
         homedirectory();
+        newPrompt();
         break;
       case 'os --architecture':
         architect();
+        newPrompt();
         break;
       case 'up':
-        homeDir = navup(homeDir);
-        console.log(`new directory is: ${homeDir}`)
+        homeDir = dirname(homeDir);
+        newPrompt();
         break;
       case 'ls':
         navlist(homeDir);
+        newPrompt();
         break;
       case '.exit':
-        console.log('\x1b[31m%s\x1b[0m', 'Goodbye!');
-        rl.close();
+        newPrompt();
         break;
 
       default:
         if (input.trim().startsWith('cd ')) {
             const folderName = input.trim().substring(3);
+            console.log('\x1b[32mWhat is your name? \x1b[0m', `${homeDir}, ${folderName}`)
             navdown(homeDir, folderName)
               .then((newPath) => {
                 homeDir = newPath;
@@ -110,11 +120,19 @@ rl.on('line', (input) => {
           } else {
             console.log(`Invalid input: ${input.trim()}`);
           }
+        newPrompt();
         break;
     }
   
-    rl.prompt();
+    
   }).on('close', () => {
-    console.log('Exiting...');
+    console.log('\x1b[31m%s\x1b[0m', `Thank you for using File Manager, ${username}, goodbye!`);
     process.exit(0);
   });
+
+
+  function newPrompt() {
+    rl.setPrompt(`\x1b[32m${homeDir}> \x1b[0m`);
+    rl.prompt();
+    return;
+  }

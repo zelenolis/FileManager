@@ -171,7 +171,7 @@ async function isAFile(pathToFile) {
     }
 }
 
-async function isADir(pathToDir) {
+export async function isADir(pathToDir) {
     try {
         const stats = await stat(pathToDir);
         return stats.isDirectory();
