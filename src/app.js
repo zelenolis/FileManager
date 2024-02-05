@@ -1,7 +1,8 @@
 import readline from 'readline';
 import os from 'os';
-import { cpusinfo, osinfo, systemUser, homedirectory, architect } from './utils/opsys.js'
-import { navup, navdown, navlist } from './utils/navigation.js'
+import { cpusinfo, osinfo, systemUser, homedirectory, architect } from './utils/opsys.js';
+import { navup, navdown, navlist } from './utils/navigation.js';
+import { hashCalc } from './utils/hash.js';
 
 let homeDir = os.homedir();
 const userArgs = process.argv;
@@ -71,6 +72,9 @@ rl.on('line', (input) => {
               .catch((err) => {
                 console.log(err);
               })
+          } else if (input.trim().startsWith('hash ')) {
+            const hashName = input.trim().substring(5);
+            hashCalc(homeDir, hashName);
           } else {
             console.log(`Invalid input: ${input.trim()}`);
           }
