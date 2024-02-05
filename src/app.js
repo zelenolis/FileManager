@@ -4,6 +4,7 @@ import { cpusinfo, osinfo, systemUser, homedirectory, architect } from './utils/
 import { navup, navdown, navlist } from './utils/navigation.js';
 import { hashCalc } from './utils/hash.js';
 import { compress, decompress } from './utils/compres.js';
+import { printFile, createNewFile, renameFile, copyThatFile, moveThatFile, deleteThis } from './utils/basic.js'
 
 let homeDir = os.homedir();
 const userArgs = process.argv;
@@ -82,6 +83,30 @@ rl.on('line', (input) => {
           } else if (input.trim().startsWith('decompress ')) {
             const filename = input.trim().substring(11);
             decompress(homeDir, filename);
+          } else if (input.trim().startsWith('cat ')) {
+            const toRead = input.trim().substring(4);
+            printFile(homeDir, toRead);
+          } else if (input.trim().startsWith('add ')) {
+            const newFile = input.trim().substring(4);
+            createNewFile(homeDir, newFile);
+          } else if (input.trim().startsWith('rename ')) {
+            const renameInput = input.trim().split(' ');
+            const oldName = renameInput[1];
+            const newName = renameInput[2];
+            renameFile(homeDir, oldName, newName);
+          } else if (input.trim().startsWith('cp ')) {
+            const renameInput = input.trim().split(' ');
+            const copyFileName = renameInput[1];
+            const CopyPath = renameInput[2];
+            copyThatFile(homeDir, copyFileName, CopyPath);
+          } else if (input.trim().startsWith('mv ')) {
+            const renameInput = input.trim().split(' ');
+            const moveFileName = renameInput[1];
+            const movePath = renameInput[2];
+            moveThatFile(homeDir, moveFileName, movePath);
+          } else if (input.trim().startsWith('rm ')) {
+            const delFile = input.trim().substring(3);
+            deleteThis(homeDir, delFile);
           } else {
             console.log(`Invalid input: ${input.trim()}`);
           }
