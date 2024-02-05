@@ -1,0 +1,65 @@
+List of operations and their syntax:
+
+1. Navigation
+
+    - Go upper from current directory:
+    up
+
+    - Go to dedicated folder from current directory (path_to_directory must be relative!)
+    cd path_to_directory
+
+    - Print in console list of all files and folders in current directory
+    ls
+
+2. Basic operations with files
+
+    - Read file and print it's content in console:
+    cat path_to_file
+
+    - Create empty file in current working directory:
+    add new_file_name
+
+    - Rename file:
+    rn path_to_file new_filename
+
+    - Copy file:
+    cp path_to_file path_to_new_directory
+
+    - Move file:
+    mv path_to_file path_to_new_directory
+
+    - Delete file:
+    rm path_to_file
+
+3. Operating system info
+
+    - Get EOL
+    os --EOL
+
+    - Get host machine CPUs info
+    os --cpus
+
+    - Get home directory
+    os --homedir
+
+    - Get current system user name
+    os --username
+
+    - Get CPU architecture for which Node.js binary has compiled
+    os --architecture
+
+4. Hash
+
+    - Calculate hash for file and print it into console
+    hash path_to_file
+
+5. Compress and decompress operations
+
+    - Compress file. You can omit path_to_destination then the file will be placed in the current folder
+    compress path_to_file 
+    compress path_to_file path_to_destination
+
+    - Decompress file. You can omit path_to_destination then the file will be placed in the current folder
+    decompress path_to_file
+    decompress path_to_file path_to_destination
+    

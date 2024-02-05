@@ -1,14 +1,19 @@
 import readline from 'readline';
+import { fileURLToPath } from 'url';
+import { join } from 'path';
 import { dirname } from 'path';
 import os from 'os';
 import { cpusinfo, osinfo, systemUser, homedirectory, architect } from './utils/opsys.js';
-import { navup, navdown, navlist } from './utils/navigation.js';
+import { navdown, navlist } from './utils/navigation.js';
 import { hashCalc } from './utils/hash.js';
 import { compress, decompress } from './utils/compres.js';
 import { printFile, createNewFile, renameFile, copyThatFile, moveThatFile, deleteThis } from './utils/basic.js'
 
 let homeDir = os.homedir();
 const userArgs = process.argv;
+
+const appPath = fileURLToPath(import.meta.url);
+const appDir = dirname(appPath);
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -26,6 +31,7 @@ userArgs.forEach((val) => {
 
 if (username !== '') {
     console.log(`Welcome to the File Manager, ${username}!`);
+    console.log('use the "help" to see full command\'s list')
     console.log(`\x1b[32mYou are currently in ${homeDir}\x1b[0m`);
 } else {
   console.log('\x1b[31m%s\x1b[0m', `start the program in following way: npm run start -- --username=your_username`);
@@ -66,58 +72,58 @@ rl.on('line', async (input) => {
         newPrompt();
         break;
       case 'ls':
-        navlist(homeDir);
+        await navlist(homeDir);
+        newPrompt();
+        break;
+      case 'help':
+        printFile(appDir, 'help.txt')
         newPrompt();
         break;
       case '.exit':
-        newPrompt();
+        rl.close();
         break;
 
       default:
         if (input.trim().startsWith('cd ')) {
             const folderName = input.trim().substring(3);
             homeDir = await navdown(homeDir, folderName);
-            /*
-            navdown(homeDir, folderName)
-              .then((newPath) => {
-                homeDir = newPath;
-              })
-              .catch((err) => {
-                console.log(err);
-              })*/
           } else if (input.trim().startsWith('hash ')) {
             const hashName = input.trim().substring(5);
             hashCalc(homeDir, hashName);
           } else if (input.trim().startsWith('compress ')) {
-            const filename = input.trim().substring(9);
-            compress(homeDir, filename);
+            const compressInput = input.trim().split(' ');
+            const filenameCo = compressInput[1];
+            const pathToCompress = compressInput[2];
+            await compress(homeDir, filenameCo, pathToCompress);
           } else if (input.trim().startsWith('decompress ')) {
-            const filename = input.trim().substring(11);
-            decompress(homeDir, filename);
+            const decompressInput = input.trim().split(' ');
+            const filenameDe = decompressInput[1];
+            const pathToDecompress = decompressInput[2];
+            await decompress(homeDir, filenameDe, pathToDecompress);
           } else if (input.trim().startsWith('cat ')) {
             const toRead = input.trim().substring(4);
-            printFile(homeDir, toRead);
+            await printFile(homeDir, toRead);
           } else if (input.trim().startsWith('add ')) {
             const newFile = input.trim().substring(4);
-            createNewFile(homeDir, newFile);
-          } else if (input.trim().startsWith('rename ')) {
+            await createNewFile(homeDir, newFile);
+          } else if (input.trim().startsWith('rn ')) {
             const renameInput = input.trim().split(' ');
             const oldName = renameInput[1];
             const newName = renameInput[2];
-            renameFile(homeDir, oldName, newName);
+            await renameFile(homeDir, oldName, newName);
           } else if (input.trim().startsWith('cp ')) {
             const renameInput = input.trim().split(' ');
             const copyFileName = renameInput[1];
             const CopyPath = renameInput[2];
-            copyThatFile(homeDir, copyFileName, CopyPath);
+            await copyThatFile(homeDir, copyFileName, CopyPath);
           } else if (input.trim().startsWith('mv ')) {
             const renameInput = input.trim().split(' ');
             const moveFileName = renameInput[1];
             const movePath = renameInput[2];
-            moveThatFile(homeDir, moveFileName, movePath);
+            await moveThatFile(homeDir, moveFileName, movePath);
           } else if (input.trim().startsWith('rm ')) {
             const delFile = input.trim().substring(3);
-            deleteThis(homeDir, delFile);
+            await deleteThis(homeDir, delFile);
           } else {
             console.log(`Invalid input: ${input.trim()}`);
           }
@@ -133,6 +139,7 @@ rl.on('line', async (input) => {
 
 
   function newPrompt() {
+    console.log('');
     rl.setPrompt(`\x1b[32m${homeDir}> \x1b[0m`);
     rl.prompt();
     return;

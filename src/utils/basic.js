@@ -7,7 +7,7 @@ import { pipeline } from 'node:stream';
 import { unlink } from 'node:fs';
 
 
-export function printFile(pth, filename) {
+export async function printFile(pth, filename) {
     const pathToFile = join(pth, filename);
 
     isAFile(pathToFile)
@@ -30,7 +30,7 @@ export function printFile(pth, filename) {
           });
 }
 
-export function createNewFile(pth, filename) {
+export async function createNewFile(pth, filename) {
     const pathToFile = join(pth, filename);
 
     alreadyExist(pathToFile)
@@ -40,8 +40,8 @@ export function createNewFile(pth, filename) {
                     if (err) {
                         console.log('Something went wrong!');
                     }
-                    console.log(`${filename} created`);
                 });
+                console.log(`${filename} created`);
             } else {
                 console.log('File already exist!');
                 return;
@@ -52,7 +52,7 @@ export function createNewFile(pth, filename) {
           });    
 }
 
-export function renameFile(pth, filename, newName) {
+export async function renameFile(pth, filename, newName) {
     const pathToFile = join(pth, filename);
     const pathToNew = join(pth, newName);
 
@@ -63,9 +63,8 @@ export function renameFile(pth, filename, newName) {
                     if (err) {
                         console.log('Something went wrong!');
                     }
-                    console.log('Rename complete!');
-                    return;
-                  }); 
+                  });
+                  console.log('Rename complete!'); 
             } else {
                 console.log('Something went wrong!');
                 return;
@@ -93,9 +92,8 @@ export async function copyThatFile(pth, filename, newPath) {
                     console.log(`Copy error: ${err}`);
                     return;
                 }
-                console.log('Copy completed!');
-                return;
-            })
+            });
+            console.log('Copy completed!');
         } else {
             console.log('Something went wrong!');
             return;
@@ -115,9 +113,8 @@ export async function deleteThis(pth, filename) {
                 if (err) {
                     console.log('Something went wrong!');
                 }
-                console.log(`${filename} was deleted`);
-                return;
-            })
+            });
+            console.log(`${filename} was deleted`);
         } else {
             console.log('file doesn\'t exist');
             return;

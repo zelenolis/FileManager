@@ -4,9 +4,6 @@ import { join } from 'path';
 import { stat } from 'fs';
 import { isADir } from './basic.js';
 
-export function navup(pth) {
-    return dirname(pth);
-}
 
 export async function navlist(pth) {
 
@@ -56,20 +53,4 @@ export async function navdown(oldPath, fldr) {
         return oldPath;
     }
 
-   /*
-    return new Promise((resolve, reject) => {
-        const newPath = join(oldPath, fldr);
-        stat(newPath, (err, stats) => {
-            if (err) reject(oldPath);
-    
-            if (stats.isDirectory()) {
-                console.log(`directory changed to ${newPath}`);
-                resolve(newPath);
-            } else {
-                console.log('no such directory');
-                resolve(oldPath);
-            }
-        })
-    })
-    */
 }
