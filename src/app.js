@@ -3,6 +3,7 @@ import os from 'os';
 import { cpusinfo, osinfo, systemUser, homedirectory, architect } from './utils/opsys.js';
 import { navup, navdown, navlist } from './utils/navigation.js';
 import { hashCalc } from './utils/hash.js';
+import { compress, decompress } from './utils/compres.js';
 
 let homeDir = os.homedir();
 const userArgs = process.argv;
@@ -75,6 +76,12 @@ rl.on('line', (input) => {
           } else if (input.trim().startsWith('hash ')) {
             const hashName = input.trim().substring(5);
             hashCalc(homeDir, hashName);
+          } else if (input.trim().startsWith('compress ')) {
+            const filename = input.trim().substring(9);
+            compress(homeDir, filename);
+          } else if (input.trim().startsWith('decompress ')) {
+            const filename = input.trim().substring(11);
+            decompress(homeDir, filename);
           } else {
             console.log(`Invalid input: ${input.trim()}`);
           }
