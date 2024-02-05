@@ -30,8 +30,8 @@ userArgs.forEach((val) => {
 });
 
 if (username !== '') {
-    console.log(`Welcome to the File Manager, ${username}!`);
-    console.log('use the "help" to see full command\'s list')
+    console.log(`\x1b[36mWelcome to the File Manager, \x1b[32m${username}!\x1b[0m`);
+    console.log('\x1b[33mUse the "help" to see full command\'s list\x1b[0m');
     console.log(`\x1b[32mYou are currently in ${homeDir}\x1b[0m`);
 } else {
   console.log('\x1b[31m%s\x1b[0m', `start the program in following way: npm run start -- --username=your_username`);
@@ -76,7 +76,7 @@ rl.on('line', async (input) => {
         newPrompt();
         break;
       case 'help':
-        printFile(appDir, 'help.txt')
+        await printFile(appDir, 'help.txt');
         newPrompt();
         break;
       case '.exit':

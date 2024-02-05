@@ -10,69 +10,76 @@ import { unlink } from 'node:fs';
 export async function printFile(pth, filename) {
     const pathToFile = join(pth, filename);
 
-    isAFile(pathToFile)
-        .then((check) => {
-            if (check) {
-                const readStream = createReadStream(pathToFile, { encoding: 'utf8' });
-                readStream.on('data', (chunk) => {
-                    process.stdout.write(chunk);
-                  });
-                  readStream.on('error', (err) => {
-                    console.error(`Process error: ${err}`);
-                  });
-            } else {
-                console.log('Something went wrong!');
-                return;
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-          });
+    try {
+        if (
+            (await isAFile(pathToFile))
+        ) {
+            const readStream = createReadStream(pathToFile, { encoding: 'utf8' });
+            readStream.on('data', (chunk) => {
+                process.stdout.write(chunk);
+                });
+                readStream.on('error', (err) => {
+                console.error(`Process error: ${err}`);
+                });
+                readStream.on('close', () => {
+                    console.log('');
+                });
+        } else {
+            console.log('Something went wrong!');
+            return;
+        }
+    } catch (err) {
+        console.log(`Unexpected read error: ${err}`);
+        return;
+    }
 }
 
 export async function createNewFile(pth, filename) {
     const pathToFile = join(pth, filename);
 
-    alreadyExist(pathToFile)
-        .then((check) => {
-            if (!check) {
-                writeFile(pathToFile, '', (err) => {
-                    if (err) {
-                        console.log('Something went wrong!');
-                    }
-                });
-                console.log(`${filename} created`);
-            } else {
-                console.log('File already exist!');
-                return;
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-          });    
+    try {
+        if (
+            (!(await alreadyExist(pathToFile)))
+        ) {
+            writeFile(pathToFile, '', (err) => {
+                if (err) {
+                    console.log('Something went wrong!');
+                }
+            });
+            console.log(`${filename} created`);
+        } else {
+            console.log('Something went wrong!');
+            return;
+        }
+    } catch (err) {
+        console.log(`Unexpected create error: ${err}`);
+        return;
+    }
 }
 
 export async function renameFile(pth, filename, newName) {
     const pathToFile = join(pth, filename);
     const pathToNew = join(pth, newName);
 
-    isAFile(pathToFile)
-        .then((check) => {
-            if (check) {
-                rename(pathToFile, pathToNew, (err) => {
-                    if (err) {
-                        console.log('Something went wrong!');
-                    }
-                  });
-                  console.log('Rename complete!'); 
-            } else {
-                console.log('Something went wrong!');
-                return;
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-          });
+    try {
+        if (
+            (await isAFile(pathToFile)) &&
+            (!(await alreadyExist(pathToNew)))
+        ) {
+            rename(pathToFile, pathToNew, (err) => {
+                if (err) {
+                    console.log('Something went wrong!');
+                }
+              });
+              console.log('Rename complete!'); 
+        } else {
+            console.log('Something went wrong!');
+            return;
+        }
+    } catch (err) {
+        console.log(`Unexpected rename error: ${err}`);
+        return;
+    }
 }
 
 export async function copyThatFile(pth, filename, newPath) {
@@ -120,7 +127,7 @@ export async function deleteThis(pth, filename) {
             return;
         }
     } catch (err) {
-        console.log(`Unexpected copy error: ${err}`);
+        console.log(`Unexpected delete error: ${err}`);
         return;
     }
 }
