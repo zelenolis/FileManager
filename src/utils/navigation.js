@@ -2,7 +2,7 @@ import { dirname } from 'path';
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { stat } from 'fs';
-// import { isADir } from './basic.js';
+import { isADir } from './basic.js';
 
 export function navup(pth) {
     return dirname(pth);
@@ -42,8 +42,9 @@ export async function navlist(pth) {
 }
 
 export async function navdown(oldPath, fldr) {
-    /*
+   
     const newPath = join(oldPath, fldr);
+
     try {
         if(await isADir(newPath)) {
             console.log(`directory changed to ${newPath}`);
@@ -54,12 +55,12 @@ export async function navdown(oldPath, fldr) {
     } catch (err) {
         return oldPath;
     }
-*/
-  
+
+   /*
     return new Promise((resolve, reject) => {
         const newPath = join(oldPath, fldr);
         stat(newPath, (err, stats) => {
-            if (err) reject(err);
+            if (err) reject(oldPath);
     
             if (stats.isDirectory()) {
                 console.log(`directory changed to ${newPath}`);
@@ -70,4 +71,5 @@ export async function navdown(oldPath, fldr) {
             }
         })
     })
+    */
 }

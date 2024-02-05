@@ -39,7 +39,7 @@ if (username !== '') {
       */
 }
 
-rl.on('line', (input) => {
+rl.on('line', async (input) => {
     switch (input.trim()) {
       case 'os --EOL':
         osinfo();
@@ -76,14 +76,15 @@ rl.on('line', (input) => {
       default:
         if (input.trim().startsWith('cd ')) {
             const folderName = input.trim().substring(3);
-            console.log('\x1b[32mWhat is your name? \x1b[0m', `${homeDir}, ${folderName}`)
+            homeDir = await navdown(homeDir, folderName);
+            /*
             navdown(homeDir, folderName)
               .then((newPath) => {
                 homeDir = newPath;
               })
               .catch((err) => {
                 console.log(err);
-              })
+              })*/
           } else if (input.trim().startsWith('hash ')) {
             const hashName = input.trim().substring(5);
             hashCalc(homeDir, hashName);
