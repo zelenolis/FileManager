@@ -10,10 +10,10 @@ export function hashCalc(homeDir, hashFile) {
     const hash = createHash('sha256');
 
     file.on('error', (err) => {
-        console.error(`Error reading file: ${err}`);
+        console.log(err);
     });
     hash.on('error', (err) => {
-        console.error(`Error calculating hash: ${err}`);
+        console.log(err);
     });
 
     try {
